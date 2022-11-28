@@ -1,0 +1,48 @@
+version: "3.3"
+services:
+
+
+  influxdb2:
+    image: influxdb:2.0
+    ports:
+      - "8086:8086"
+    volumes:
+     - ./influxdb2/:/var/lib/influxdb2
+    environment:
+     - DOCKER_INFLUXDB_INIT_MODE=setup
+     - DOCKER_INFLUXDB_INIT_USERNAME=my-user
+     - DOCKER_INFLUXDB_INIT_PASSWORD=my-password
+     - DOCKER_INFLUXDB_INIT_ORG=my-org
+     - DOCKER_INFLUXDB_INIT_BUCKET=jmeter
+     - DOCKER_INFLUXDB_INIT_RETENTION=1w
+     - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=my-super-secret-auth-token
+
+  prometheus:
+    image: prom/prometheus:v2.38.0
+    container_name: prometheus-container
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yaml'
+    ports:
+      - "9990:9090"
+    restart: always
+
+  grafana:
+    image: grafana/grafana-oss:9.1.4
+    user: "$UID:$GID"
+    container_name: grafana-container
+    depends_on:
+      - prometheus
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SERVER_DOMAIN=localhost
+
+  mysql:
+    image: sakila:m1
+    ports:
+      - "3306:3306"
