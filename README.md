@@ -2,9 +2,6 @@
 Google Developers Group Azerbaijan DevFest2022
 
 
-![Alt text](/../master/screenshots/observability.png?raw=true "Observability")
-
-
 ![Alt text](/../master/screenshots/jmeter.png?raw=true "Apache JMeter")
 
 
